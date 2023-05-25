@@ -10,7 +10,7 @@ class SystemModuloMenu extends Model
 {
     use HasFactory;
     protected $table = "system_modulos_menus";
-    protected $fillable = ["nombre", "key","route", "mdi_icon", "status", "modulo_id"];
+    protected $fillable = ["nombre", "key", "route", "mdi_icon", "status", "modulo_id"];
 
     public function modulo(): BelongsTo {
         return $this->belongsTo(SystemModulo::class);

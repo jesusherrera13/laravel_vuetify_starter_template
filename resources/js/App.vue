@@ -44,14 +44,12 @@ export default {
 
             if(response.token) {
 
-                let app_name = import.meta.env.VITE_APP_NAME;
                 this.user = response.user;
                 this.token = response.token;
                 this.system_modulos = response.system_modulos;
 
-                localStorage.setItem(`${app_name}_user`, JSON.stringify(this.user));
-                localStorage.setItem(`${app_name}_token`, this.token);
-                // localStorage.setItem(`${app_name}_system_modulos`, JSON.stringify(this.system_modulos));
+                localStorage.setItem(`${this.app_name}_user`, JSON.stringify(this.user));
+                localStorage.setItem(`${this.app_name}_token`, this.token);
                 
                 this.$router.push('/');
             }

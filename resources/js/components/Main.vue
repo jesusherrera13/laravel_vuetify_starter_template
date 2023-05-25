@@ -19,7 +19,7 @@
           <v-list v-model:opened="open" nav :lines="false">
               <v-list-item prepend-icon="mdi-home" title="Dashboard" value="dashboard" to="/"></v-list-item>
               <template v-for="modulo in system_modulos" :value="modulo.id">
-                <v-list-group v-if="modulo.menus">
+                <v-list-group v-if="modulo.menus.length">
                   <template v-slot:activator="{ props }">
                     <v-list-item
                       v-bind="props"

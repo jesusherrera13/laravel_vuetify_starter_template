@@ -28,6 +28,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     // SYSTEM MENUS
     // Route::get('/v1/system-modulo', [SystemModuloController::class, 'index']);
     Route::post('/v1/system-modulo-menu', [SystemModuloMenuController::class, 'store']);
+    Route::post('/v1/system-modulo-menu/{systemModuloMenu}', [SystemModuloMenuController::class, 'update']);
     Route::post('/v1/system-modulo/{systemModulo}', [SystemModuloController::class, 'update']);
     Route::get('/v1/system-modulo/{systemModulo}', [SystemModuloController::class, 'show']);
     Route::post('/v1/system-modulos', [SystemController::class, 'systemModulos']);

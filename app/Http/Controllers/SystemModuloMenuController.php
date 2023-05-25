@@ -39,9 +39,12 @@ class SystemModuloMenuController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, SystemModuloMenu $systemModuloMenu)
+    public function update(SystemModuloMenuUpdateRequest $request, SystemModuloMenu $systemModuloMenu)
     {
-        //
+        $validated = $request->validated();
+        $systemModuloMenu->update($validated);
+
+        return response()->json($systemModuloMenu, 200);
     }
 
     /**

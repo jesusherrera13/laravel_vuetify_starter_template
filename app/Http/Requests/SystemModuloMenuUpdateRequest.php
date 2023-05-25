@@ -22,7 +22,6 @@ class SystemModuloMenuUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'cuenta_id' => 'required',
             'nombre' => 'required|unique:system_modulos_menus,nombre,'.$this->request->get('id').',id,modulo_id,'.$this->request->get('modulo_id'),
             'key' => 'nullable|unique:system_modulos_menus,key,'.$this->request->get('id').',id',
             'route' => 'nullable|unique:system_modulos_menus,route,'.$this->request->get('id').',id',

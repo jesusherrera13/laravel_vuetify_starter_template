@@ -82,58 +82,7 @@ class DatabaseSeeder extends Seeder
         ]);
         // USER ROL
 
-
-        /* 
-        // USERS ROLES
-        DB::table('users_roles')->insert([
-            'user_id' => 1,
-            'rol_id' => 1,
-        ]);
-        // USERS ROLES 
-        */
-
-        // MENUS
-        /* 
-        DB::table('system_modulos')->insert([
-            'title' => 'Inicio',
-            'value' => 'inicio',
-            'route' => '/',
-            'mdi_icon' => 'mdi-home-city',
-            'created_at' => date('Y-m-d h:i:s'),
-        ]);
-
-        DB::table('system_modulos')->insert([
-            'title' => 'Jugadores',
-            'value' => 'jugadores',
-            'route' => '/jugadores',
-            'mdi_icon' => 'mdi-account-multiple-plus',
-            'created_at' => date('Y-m-d h:i:s'),
-        ]);
-
-        DB::table('system_modulos')->insert([
-            'title' => 'Equipos',
-            'value' => 'equipos',
-            'route' => '/equipos',
-            'mdi_icon' => 'mdi-baseball-bat',
-            'created_at' => date('Y-m-d h:i:s'),
-        ]);
-
-        DB::table('system_modulos')->insert([
-            'title' => 'Temporadas',
-            'value' => 'temporadas',
-            'route' => '/temporadas',
-            'mdi_icon' => 'mdi-list-box-outline',
-            'created_at' => date('Y-m-d h:i:s'),
-        ]);
-
-        DB::table('system_modulos')->insert([
-            'title' => 'Calendario',
-            'value' => 'calendario',
-            'route' => '/calendario',
-            'mdi_icon' => 'mdi-calendar-month',
-            'created_at' => date('Y-m-d h:i:s'),
-        ]); */
-
+        // MODULOS
         DB::table('system_modulos')->insert([
             'nombre' => 'Configuración',
             'key' => 'system-configuracion',
@@ -167,7 +116,7 @@ class DatabaseSeeder extends Seeder
             'nombre' => 'Accesos',
             'key' => 'system-accesos',
             'route' => '/system-accesos',
-            'mdi_icon' => 'mdi-account-key',
+            'mdi_icon' => 'mdi-key-chain-variant',
             'created_at' => date('Y-m-d h:i:s'),
             'modulo_id' => 1
         ]);

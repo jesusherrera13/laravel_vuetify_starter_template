@@ -220,7 +220,6 @@ export default {
                     this.overlay = false;
                 })
                 .catch(function (error) {
-                    console.log(error.response.status);
                     this.overlay = false;
                 });
         },
@@ -244,7 +243,6 @@ export default {
                     _this.$emit('system-modulos');
                 })
                 .catch(function (error) {
-                    console.log(error.response.status);
                     this.overlay = false;
                 });
         },

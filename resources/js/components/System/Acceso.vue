@@ -17,17 +17,17 @@
                     <v-col
                         cols="6"
                     >
-                    {{ user_id }}
-                    <v-autocomplete
-                        v-model="user_id"
-                        clearable
-                        label="Autocomplete"
-                        :items="usuarios"
-                        item-value="id"
-                        item-title="name"
-                        @change="nuevo()"
+                        <v-autocomplete
+                            v-model="user_id"
+                            clearable
+                            label="Usuario"
+                            :items="usuarios"
+                            item-value="id"
+                            item-title="name"
+                            @change="nuevo()"
+                            variant="outlined"
 
-                    ></v-autocomplete>
+                        ></v-autocomplete>
                     </v-col>
 
                     <v-col cols="6" class="text-right">
@@ -44,7 +44,6 @@
             </v-card-text>
         </v-card>
         <v-card>
-            {{ selected }}
             <v-container>
                 <v-data-table
                     v-model:items-per-page="itemsPerPage"
