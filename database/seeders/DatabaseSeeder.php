@@ -33,11 +33,11 @@ class DatabaseSeeder extends Seeder
             'password' => '$2y$10$oIsnvXUi6DwR14GQzvBXmOFtX6.FeofhzyZ3sm4UsxnpXH0BMoH76',
         ]);
 
-        DB::table('users')->insert([
+        /* DB::table('users')->insert([
             'name' => 'Jesús Herrera',
             'email' => 'jesusherrera13@gmail.com',
             'password' => '$2y$10$oIsnvXUi6DwR14GQzvBXmOFtX6.FeofhzyZ3sm4UsxnpXH0BMoH76',
-        ]);
+        ]); */
 
         /* 
         DB::table('users')->insert([
@@ -50,6 +50,11 @@ class DatabaseSeeder extends Seeder
         // ADMINISTRADORES DE SISTEMA
         DB::table('system_administradores')->insert([
             'user_id' => 1,
+            'created_at' => date('Y-m-d h:i:s')
+        ]);
+
+        DB::table('system_roles')->insert([
+            'nombre' => 'Administrador',
             'created_at' => date('Y-m-d h:i:s')
         ]);
 
@@ -68,6 +73,14 @@ class DatabaseSeeder extends Seeder
             'created_at' => date('Y-m-d h:i:s')
         ]);
         // ROLES
+
+        // USER ROL
+        DB::table('users_roles')->insert([
+            'user_id' => 1,
+            'rol_id' => 1,
+            'created_at' => date('Y-m-d h:i:s')
+        ]);
+        // USER ROL
 
 
         /* 
@@ -145,7 +158,16 @@ class DatabaseSeeder extends Seeder
             'nombre' => 'Usuarios',
             'key' => 'system-usuarios',
             'route' => '/system-usuarios',
-            'mdi_icon' => 'mdi-account',
+            'mdi_icon' => 'mdi-account-multiple',
+            'created_at' => date('Y-m-d h:i:s'),
+            'modulo_id' => 1
+        ]);
+
+        DB::table('system_modulos_menus')->insert([
+            'nombre' => 'Accesos',
+            'key' => 'system-accesos',
+            'route' => '/system-accesos',
+            'mdi_icon' => 'mdi-account-key',
             'created_at' => date('Y-m-d h:i:s'),
             'modulo_id' => 1
         ]);

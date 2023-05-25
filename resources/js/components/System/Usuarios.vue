@@ -48,7 +48,7 @@
                 <v-data-table
                     v-model:items-per-page="itemsPerPage"
                     :headers="headers"
-                    :items="modulos"
+                    :items="usuarios"
                     :search="search"
                     density="compact"
                 >
@@ -86,7 +86,7 @@
             >
                 <v-card>
                     <v-card-title>
-                        <span class="text-h5">Módulo</span>
+                        <span class="text-h5">Usuario</span>
                     </v-card-title>
                     <v-card-text>
                         <v-container>
@@ -94,52 +94,55 @@
                                 <v-col
                                     cols="12"
                                 >
+                                    <v-text-field v-show="false"
+                                        v-model="usuario.id"
+                                        type="hidden"
+                                    ></v-text-field>
                                     <v-text-field
-                                        v-model="registro.nombre"
+                                        v-model="usuario.name"
                                         label="Nombre"
                                         required
-                                        variant="outlined"
                                     ></v-text-field>
                                 </v-col>
                                 <v-col
                                     cols="12"
                                 >
                                     <v-text-field
-                                        v-model="registro.key"
-                                        label="Key"
+                                        v-model="usuario.email"
+                                        label="Email"
+                                        hint="Escriba un Email válido"
                                         required
-                                        variant="outlined"
+                                        type="email"
+                                        :readonly="usuario.id ? true : false"
                                     ></v-text-field>
                                 </v-col>
-                                <v-col
-                                    cols="12"
-                                >
+                                <v-col cols="12" v-show="!usuario.id || password_reset">
                                     <v-text-field
-                                        v-model="registro.route"
-                                        label="Route"
+                                        v-model="usuario.password"
+                                        label="Password"
+                                        persistent-hint
                                         required
-                                        variant="outlined"
+                                        type="password"
+                                        :readonly="usuario.id  && !password_reset ? true : false"
                                     ></v-text-field>
                                 </v-col>
-                                <v-col
-                                    cols="12"
-                                >
+                                <v-col cols="12" v-show="!usuario.id || password_reset">
                                     <v-text-field
-                                        v-model="registro.mdi_icon"
-                                        label="MDI Icon"
+                                        v-model="usuario.password_confirmation"
+                                        label="Password confirmation"
                                         required
-                                        variant="outlined"
+                                        type="password"
+                                        :readonly="usuario.id  && !password_reset ? true : false"
                                     ></v-text-field>
                                 </v-col>
-
                                 <v-col cols="12">
                                     <v-select
-                                        v-model="registro.status"
-                                        label="Status"
+                                        v-model="usuario.rol_id"
+                                        label="Rol"
                                         density="compact"
                                         item-value="id"
                                         item-title="nombre"
-                                        :items="status"
+                                        :items="system_roles"
                                         variant="outlined"
                                     ></v-select>
                                 </v-col>
@@ -147,6 +150,13 @@
                         </v-container>
                     </v-card-text>
                     <v-card-actions>
+                        <v-btn v-show="usuario.id"
+                            color="blue-darken-1"
+                            variant="text"
+                            @click="setResetPassword"
+                        >
+                            Reset Password
+                        </v-btn>
                         <v-spacer></v-spacer>
                         <v-btn
                             color="blue-darken-1"
@@ -167,7 +177,6 @@
             </v-dialog>
         </v-row>
         
-        <Overlay :overlay="overlay"/>
     </v-container>
 </template>
 <script>
@@ -181,65 +190,76 @@ export default {
     },
     data() {
         return {
-            modulos: [],
             overlay: false,
             dialog: false,
-            registro: { id: null, nombre: null, key: null, $router: null, mdi_icon: null, status: null },
+            password_reset: false,
+            usuario: { id: null, name: null, email: null, password: null, rol_id: null },
             breadcrumbs: [
-                {
-                    title: 'Dashboard',
-                    disabled: false,
-                    href: '/',
-                },
-                {
-                    title: 'Registros',
-                    disabled: true,
-                    href: '/registro',
-                },
-                {
-                    title: 'Nuevo',
-                    disabled: false,
-                    href: '/registro/nuevo',
-                },
+                { title: 'Dashboard', disabled: false, href: '/' },
+                { title: 'Registros', disabled: true, href: '/registro' },
+                { title: 'Nuevo', disabled: false, href: '/registro/nuevo' },
             ],
             search: '',
             itemsPerPage: 20,
             headers: [
-                { title: 'Nombre', align: 'start', sortable: true, key: 'nombre' },
-                { title: 'Key', align: 'start', sortable: true, key: 'key' },
-                { title: 'Route', align: 'start', sortable: true, key: 'route' },
-                { title: 'MDI Icon', align: 'start', sortable: true, key: 'mdi_icon' },
+                { title: 'Nombre', align: 'start', sortable: true, key: 'name' },
+                { title: 'Email', align: 'start', sortable: true, key: 'email' },
+                { title: 'Rol', align: 'start', sortable: true, key: 'rol' },
                 { title: '', align: 'end',key: 'actions', sortable: false },
             ],
             status: [
                 { id: 1, nombre: 'Activo' },
                 { id: 2, nombre: 'Inctivo' },
             ],
+            usuarios: [],
+            system_roles: [],
         }
     },
     created() {
-        this.getModulos();
+        this.getUsuarios();
+        this.getSystemRoles();
     },
     methods: {
-        async getModulos() {
+        async getUsuarios() {
             let _this = this;
             this.overlay = true;
 
             axios.defaults.withCredentials = true;
 
-            axios.get(`/${this.app_api}/system-modulo`, this.requestHeaders())
+            axios.get(`/${this.app_api}/system-usuario`, this.requestHeaders())
                 .then(response => {
-                    _this.modulos = response.data;
+                    _this.usuarios = response.data;
 
-                    _this.modulos.sort((a, b) => {
+                    _this.usuarios.sort((a, b) => {
                         if (a.nombre < b.nombre) return -1;
                     });
 
-                    this.overlay = false;
+                    _this.overlay = false;
                 })
                 .catch(function (error) {
                     console.log(error.response.status);
-                    this.overlay = false;
+                    _this.overlay = false;
+                });
+        },
+        async getSystemRoles() {
+            let _this = this;
+            this.overlay = true;
+
+            axios.defaults.withCredentials = true;
+
+            axios.get(`/${this.app_api}/system-roles`, this.requestHeaders())
+                .then(response => {
+                    _this.system_roles = response.data;
+
+                    _this.system_roles.sort((a, b) => {
+                        if (a.nombre < b.nombre) return -1;
+                    });
+
+                    _this.overlay = false;
+                })
+                .catch(function (error) {
+                    // console.log(error.response.status);
+                    _this.overlay = false;
                 });
         },
         async guardar() {
@@ -248,17 +268,18 @@ export default {
 
             axios.defaults.withCredentials = true;
 
-            let url = `${this.app_api}/system-modulo`;
+            let url = this.app_api;
 
-            if(this.registro.id) url += `/${this.registro.id}`;
+            if(this.usuario.id) url += `/user-update/${this.usuario.id}`;
+            else url += `/register`;
 
-            axios.post(`${url}`, this.registro, this.requestHeaders())
+            axios.post(`${url}`, this.usuario, this.requestHeaders())
                 .then(response => {
-                    _this.registro = { id: null, nombre: null, key: null, $router: null, mdi_icon: null, status: null };
-                    _this.getModulos();
+                    _this.usuario = { id: null, name: null, email: null, password: null, rol_id: null };
+                    _this.getUsuarios();
                     _this.dialog = false;
                     _this.overlay = false;
-                    _this.$emit('system-modulos');
+                    // _this.$emit('system-usuarios');
                 })
                 .catch(function (error) {
                     console.log(error.response.status);
@@ -269,13 +290,18 @@ export default {
             console.log('nuevo')
         },
         editItem (item) {
-            this.registro = {...item};
+            this.usuario = {...item};
             this.dialog = true;
         },
         deleteItem (item) {
             this.editedIndex = this.desserts.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.dialogDelete = true
+        },
+        setResetPassword () {
+            this.usuario.password = null;
+            this.usuario.password_confirmation = null;
+            this.password_reset = !this.password_reset;
         },
         requestHeaders() {
             return {headers: { Authorization: `Bearer ${this.token}` }};

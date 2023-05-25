@@ -34,7 +34,7 @@ class SystemModuloController extends Controller
      */
     public function show(SystemModulo $systemModulo)
     {
-        //
+        return response()->json($systemModulo->load('menus'), 200);
     }
 
     /**

@@ -52,21 +52,23 @@ class SystemController extends Controller
         //
     }
 
-    public function users(Request $request)
+    public function usuarios(Request $request)
     {
-        $response = [];
-        $administrador = SystemAdministrador::find($request['id_usuario']);
 
-        if($administrador) {
+        $response = [];
+        $system_administrador = SystemAdministrador::find(auth()->user()->id);
+
+        if($system_administrador) {
             $response = DB::table("users as user")
-                        ->select("user.id","user.name","user.email","admin.id as is_admin","cuenta.id as cuenta_id")
+                        ->select("user.id","user.name","user.email","admin.id as is_admin","urol.rol_id","rol.nombre as rol")
                         ->leftJoin("system_administradores as admin","admin.user_id", "user.id")
-                        ->leftJoin("cuentas as cuenta","cuenta.user_id", "user.id")
+                        ->leftJoin("users_roles as urol","urol.user_id", "user.id")
+                        ->leftJoin("system_roles as rol","rol.id", "urol.rol_id")
                         ->get();
         }
         else {
 
-            $propietario = CuentaUsuario::where("user_id", $request['id_usuario'])->first();
+            $propietario = CuentaUsuario::where("user_id", auth()->user()->id)->first();
             
             if($propietario) {
                 if($propietario->rol_id == 1) {

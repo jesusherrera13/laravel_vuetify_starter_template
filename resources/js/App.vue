@@ -24,9 +24,6 @@ export default {
             app_api: import.meta.env.VITE_APP_API,
             token: null,
             system_modulos: null,
-            temporada: {id: null, descripcion: 'Selección de temporada'},
-            temporadas: [],
-            temporada_equipos: [],
             messages: []
         }
     },

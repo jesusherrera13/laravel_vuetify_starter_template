@@ -19,7 +19,7 @@
           <v-list v-model:opened="open" nav :lines="false">
               <v-list-item prepend-icon="mdi-home" title="Dashboard" value="dashboard" to="/"></v-list-item>
               <template v-for="modulo in system_modulos" :value="modulo.id">
-                <v-list-group v-if="modulo.menus.length">
+                <v-list-group v-if="modulo.menus">
                   <template v-slot:activator="{ props }">
                     <v-list-item
                       v-bind="props"
@@ -69,7 +69,6 @@
           :token="token"
           :app_name="app_name"
           :app_api="app_api"
-          :temporada="temporada"
           @system-modulos="$emit('system-modulos', $event)"
 
         ></router-view>
@@ -84,7 +83,6 @@ export default {
         token: String,
         app_name: String,
         app_api: String,
-        temporada: Object,
         system_modulos: Object,
     },
     data: () => ({ 

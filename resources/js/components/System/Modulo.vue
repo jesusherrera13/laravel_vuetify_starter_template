@@ -5,7 +5,7 @@
                 <v-row >
                     <v-col
                     >
-                        <h2>MÓDULOS</h2>
+                        <h2>MÓDULO {{ modulo.nombre }}</h2>
                         <v-breadcrumbs
                             :items="breadcrumbs"
                             divider="/"
@@ -34,7 +34,7 @@
                         <v-btn
                             size="small"
                             prepend-icon="mdi-plus"
-                            @click="dialog = true"
+                            @click="nuevo"
                             class="mr-1"
                         >
                             Nuevo
@@ -48,7 +48,7 @@
                 <v-data-table
                     v-model:items-per-page="itemsPerPage"
                     :headers="headers"
-                    :items="modulos"
+                    :items="modulo.menus"
                     :search="search"
                     density="compact"
                 >
@@ -58,12 +58,6 @@
                             variant="flat"
                             icon="mdi-square-edit-outline"
                             @click="editItem(item.raw)"
-                        ></v-btn>
-                        <v-btn
-                            size="small"
-                            variant="flat"
-                            icon="mdi-cog"
-                            @click="$router.push(`/system-modulo/${item.raw.id}`)"
                         ></v-btn>
                         <v-btn
                             size="small"
@@ -86,7 +80,7 @@
             >
                 <v-card>
                     <v-card-title>
-                        <span class="text-h5">Módulo</span>
+                        <span class="text-h5">Menú</span>
                     </v-card-title>
                     <v-card-text>
                         <v-container>
@@ -95,7 +89,7 @@
                                     cols="12"
                                 >
                                     <v-text-field
-                                        v-model="registro.nombre"
+                                        v-model="menu.nombre"
                                         label="Nombre"
                                         required
                                         variant="outlined"
@@ -105,7 +99,7 @@
                                     cols="12"
                                 >
                                     <v-text-field
-                                        v-model="registro.key"
+                                        v-model="menu.key"
                                         label="Key"
                                         required
                                         variant="outlined"
@@ -115,7 +109,7 @@
                                     cols="12"
                                 >
                                     <v-text-field
-                                        v-model="registro.route"
+                                        v-model="menu.route"
                                         label="Route"
                                         required
                                         variant="outlined"
@@ -125,7 +119,7 @@
                                     cols="12"
                                 >
                                     <v-text-field
-                                        v-model="registro.mdi_icon"
+                                        v-model="menu.mdi_icon"
                                         label="MDI Icon"
                                         required
                                         variant="outlined"
@@ -134,7 +128,7 @@
 
                                 <v-col cols="12">
                                     <v-select
-                                        v-model="registro.status"
+                                        v-model="menu.status"
                                         label="Status"
                                         density="compact"
                                         item-value="id"
@@ -167,7 +161,6 @@
             </v-dialog>
         </v-row>
         
-        <Overlay :overlay="overlay"/>
     </v-container>
 </template>
 <script>
@@ -184,23 +177,12 @@ export default {
             modulos: [],
             overlay: false,
             dialog: false,
-            registro: { id: null, nombre: null, key: null, $router: null, mdi_icon: null, status: null },
+            menu: { id: null, nombre: null, key: null, route: null, mdi_icon: null, status: null, modulo_id: null },
+            modulo: { id: null, nombre: null, key: null, route: null, mdi_icon: null, status: null },
             breadcrumbs: [
-                {
-                    title: 'Dashboard',
-                    disabled: false,
-                    href: '/',
-                },
-                {
-                    title: 'Registros',
-                    disabled: true,
-                    href: '/registro',
-                },
-                {
-                    title: 'Nuevo',
-                    disabled: false,
-                    href: '/registro/nuevo',
-                },
+                { title: 'Dashboard', disabled: false, href: '/' },
+                { title: 'Módulos', disabled: false, href: '/system-modulos' },
+                // { title: 'Nuevo', disabled: false, href: '/registro/nuevo', },
             ],
             search: '',
             itemsPerPage: 20,
@@ -218,22 +200,22 @@ export default {
         }
     },
     created() {
-        this.getModulos();
+        this.getModulo();
     },
     methods: {
-        async getModulos() {
+        async getModulo() {
             let _this = this;
             this.overlay = true;
 
             axios.defaults.withCredentials = true;
 
-            axios.get(`/${this.app_api}/system-modulo`, this.requestHeaders())
+            axios.get(`/${this.app_api}/system-modulo/${this.$route.params.id}`, this.requestHeaders())
                 .then(response => {
-                    _this.modulos = response.data;
+                    _this.modulo = response.data;
 
-                    _this.modulos.sort((a, b) => {
+                    /* _this.modulos.sort((a, b) => {
                         if (a.nombre < b.nombre) return -1;
-                    });
+                    }); */
 
                     this.overlay = false;
                 })
@@ -247,15 +229,16 @@ export default {
             this.overlay = true;
 
             axios.defaults.withCredentials = true;
+            this.menu.modulo_id = this.$route.params.id;
 
-            let url = `${this.app_api}/system-modulo`;
+            let url = `/${this.app_api}/system-modulo-menu`;
 
-            if(this.registro.id) url += `/${this.registro.id}`;
+            if(this.menu.id) url += `/${this.menu.id}`;
 
-            axios.post(`${url}`, this.registro, this.requestHeaders())
+            axios.post(`${url}`, this.menu, this.requestHeaders())
                 .then(response => {
-                    _this.registro = { id: null, nombre: null, key: null, $router: null, mdi_icon: null, status: null };
-                    _this.getModulos();
+                    _this.menu = { id: null, nombre: null, key: null, route: null, mdi_icon: null, status: null, modulo_id: null };
+                    _this.getModulo();
                     _this.dialog = false;
                     _this.overlay = false;
                     _this.$emit('system-modulos');
@@ -266,10 +249,11 @@ export default {
                 });
         },
         nuevo() {
-            console.log('nuevo')
+            this.menu = { id: null, nombre: null, key: null, route: null, mdi_icon: null, status: null, modulo_id: null };
+            this.dialog = true;
         },
         editItem (item) {
-            this.registro = {...item};
+            this.menu = {...item};
             this.dialog = true;
         },
         deleteItem (item) {

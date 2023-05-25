@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\SystemModuloMenu;
 use Illuminate\Http\Request;
+use App\Http\Requests\SystemModuloMenuCreateRequest;
+use App\Http\Requests\SystemModuloMenuUpdateRequest;
 
 class SystemModuloMenuController extends Controller
 {
@@ -18,9 +20,12 @@ class SystemModuloMenuController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(SystemModuloMenuCreateRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $systemModuloMenu = SystemModuloMenu::create($validated);
+
+        return response()->json($systemModuloMenu, 201);
     }
 
     /**
